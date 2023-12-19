@@ -2,6 +2,7 @@
 import dotenv from 'dotenv'
 import express from "express";
 import mongoose from "mongoose";
+import userRouter from "./routes/user.route.js"
 
 dotenv.config();
 // Initialize express app
@@ -20,9 +21,7 @@ mongoose.connect(process.env.MONGO_URL, {
   });
 
 // Set up a basic route
-app.get('/', (req, res) => {
-  res.send('Hello, this is your Express server!');
-});
+app.use("/api/user", userRouter);
 
 // Start the server
 const PORT = process.env.PORT || 3000;
