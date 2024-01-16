@@ -1,12 +1,12 @@
-
-import { Link ,useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 
 export default function SignIn() {
   const [formData, setFormData] = useState({});
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
+  const navigate = useNavigate();  // Corrected line
+
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -14,7 +14,6 @@ export default function SignIn() {
     });
   };
 
-  
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -29,16 +28,16 @@ export default function SignIn() {
       const data = await res.json();
       console.log(data);
       if (data.success === false) {
-        setLoading(false);
         setError(data.message);
-        return;
+        // Don't reset loading here, let the user try again
+      } else {
+        setError(null);
+        navigate('/sign-in');
       }
-      setLoading(false);
-      setError(null);
-      navigate('/sign-in');
     } catch (error) {
-      setLoading(false);
       setError(error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -67,9 +66,14 @@ export default function SignIn() {
           id='password'
           onChange={handleChange}
         />
-        <button className='bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-80'>signup</button>
-        <button className='bg-red-700 text-white p-3 rounded-lg uppercase hover:opacity-85 disabled:opacity-80'>google</button>
+        <button className='bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-80' disabled={loading}>
+          {loading ? 'Signing up...' : 'Signup'}
+        </button>
+        <button className='bg-red-700 text-white p-3 rounded-lg uppercase hover:opacity-85 disabled:opacity-80' disabled={loading}>
+          {loading ? 'Signing up...' : 'Google'}
+        </button>
       </form>
+      {error && <div className="text-red-500">{error}</div>}
       <div className='flex gap-2 mt-5'>
         <p>Have an account? </p>
         <Link to="/sign-in">
