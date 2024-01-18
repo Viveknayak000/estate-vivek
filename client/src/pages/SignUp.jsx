@@ -1,11 +1,11 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 
-export default function SignIn() {
+export default function Signup() {
   const [formData, setFormData] = useState({});
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();  // Corrected line
+  const navigate = useNavigate();  
 
   const handleChange = (e) => {
     setFormData({
@@ -69,9 +69,9 @@ export default function SignIn() {
         <button className='bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-80' disabled={loading}>
           {loading ? 'Signing up...' : 'Signup'}
         </button>
-        <button className='bg-red-700 text-white p-3 rounded-lg uppercase hover:opacity-85 disabled:opacity-80' disabled={loading}>
+        {/* <button className='bg-red-700 text-white p-3 rounded-lg uppercase hover:opacity-85 disabled:opacity-80' disabled={loading}>
           {loading ? 'Signing up...' : 'Google'}
-        </button>
+        </button> */}
       </form>
       {error && <div className="text-red-500">{error}</div>}
       <div className='flex gap-2 mt-5'>
