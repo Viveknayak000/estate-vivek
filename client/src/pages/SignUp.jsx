@@ -2,7 +2,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 
 export default function Signup() {
-  const [formData, setFormData] = useState({});
+  const [formData, setFormData] = useState({ username: '', email: '', password: '', phone: ''  });
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();  
@@ -25,6 +25,7 @@ export default function Signup() {
         },
         body: JSON.stringify(formData),
       });
+      if (!res.ok) throw new Error('Failed to sign up. Please try again.');
       const data = await res.json();
       console.log(data);
       if (data.success === false) {
@@ -66,12 +67,19 @@ export default function Signup() {
           id='password'
           onChange={handleChange}
         />
+        <input
+          type="text"
+          placeholder='Phone (optional)'
+          className='border p-3 rounded-lg'
+          id='phone'
+          onChange={handleChange}
+        />
         <button className='bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-80' disabled={loading}>
           {loading ? 'Signing up...' : 'Signup'}
         </button>
-        {/* <button className='bg-red-700 text-white p-3 rounded-lg uppercase hover:opacity-85 disabled:opacity-80' disabled={loading}>
-          {loading ? 'Signing up...' : 'Google'}
-        </button> */}
+         <button className='bg-red-700 text-white p-3 rounded-lg uppercase hover:opacity-85 disabled:opacity-80' disabled={loading}>
+          {loading ? 'Signing in with Google' : 'Google'}
+        </button> 
       </form>
       {error && <div className="text-red-500">{error}</div>}
       <div className='flex gap-2 mt-5'>
