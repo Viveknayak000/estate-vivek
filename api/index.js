@@ -60,7 +60,7 @@ const app = express();
 
 // Use CORS middleware with permissive configuration
 app.use(cors({
-  origin: '*',
+  origin: 'http://localhost:5173',
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   optionsSuccessStatus: 204,
 }));

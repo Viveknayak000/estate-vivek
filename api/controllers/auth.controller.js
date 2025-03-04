@@ -68,3 +68,52 @@ export const signin = async (req, res, next) => {
   }
 
 };
+
+export const google = async (req, res, next) => {
+  try {
+    console.log("Google Auth Request Body:", req.body); // Debugging log
+
+    if (!req.body.email) {
+      return res.status(400).json({ success: false, message: "Email is required" });
+    }
+
+    const user = await User.findOne({ email: req.body.email });
+
+    if (user) {
+      console.log("User found:", user);
+      const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+      const { password: pass, ...rest } = user._doc;
+
+      return res
+        .cookie('access_token', token, { httpOnly: true, sameSite: "lax" }) // Ensure cookie settings are correct
+        .status(200)
+        .json(rest);
+    }
+
+    console.log("User not found, creating new user...");
+
+    const generatePassword = Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-8);
+    const hashedPassword = bcryptjs.hashSync(generatePassword, 10);
+    const newUser = new User({
+      username: req.body.name.split(" ").join("").toLowerCase() + Math.random().toString(36).slice(-4),
+      email: req.body.email,
+      password: hashedPassword,
+      avatar: req.body.photo,
+    });
+
+    await newUser.save();
+    console.log("New user saved:", newUser);
+
+    const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET);
+    const { password: pass, ...rest } = newUser._doc;
+
+    return res
+      .cookie('access_token', token, { httpOnly: true, sameSite: "lax" }) // Ensure cookie settings are correct
+      .status(200)
+      .json(rest);
+
+  } catch (error) {
+    console.error("Error in Google Auth:", error);
+    return res.status(500).json({ success: false, message: "Internal server error" });
+  }
+};
